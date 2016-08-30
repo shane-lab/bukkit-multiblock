@@ -1,0 +1,6 @@
+main: nl.shanelab.multiblock.example.ExamplePlugin
+version: 0.0.1 mc1.10.0.2
+name: Example_MultiBlock_Plugin
+author: ShaneCraft
+description: An example plugin of the implementation of multiblock structures
+database: false
