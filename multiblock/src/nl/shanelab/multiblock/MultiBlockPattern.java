@@ -18,24 +18,22 @@ public final class MultiBlockPattern {
 
 	private final Material coreMaterial;
 	
-	private final PatternBlock[] blocks;
-	
-	// private final boolean cardinal;
+	private final PatternObject[] objects;
 	
 	private final PatternFacing patternFacing;
 	
-	public MultiBlockPattern(@Nonnull Material coreMaterial, PatternBlock ... blockPatterns) {
-		this(coreMaterial, PatternFacing.CARDINAL, blockPatterns);
+	public MultiBlockPattern(@Nonnull Material coreMaterial, PatternObject ... objects) {
+		this(coreMaterial, PatternFacing.CARDINAL, objects);
 	}
 	
-	public MultiBlockPattern(@Nonnull Material coreMaterial, PatternFacing patternFacing, PatternBlock ... blocks) {
+	public MultiBlockPattern(@Nonnull Material coreMaterial, PatternFacing patternFacing, PatternObject ... objects) {
 		if (!coreMaterial.isBlock()) {
 			throw new IllegalArgumentException(String.format("The given coreMaterial %s is not a valid block material.", coreMaterial.toString()));
 		}
 		
 		this.coreMaterial = coreMaterial;
 		this.patternFacing = patternFacing;
-		this.blocks = patternFacing == PatternFacing.CARDINAL ? blocks : rotatePatterns(blocks, patternFacing);
+		this.objects = patternFacing == PatternFacing.CARDINAL ? objects : rotatePatterns(objects, patternFacing);
 	}
 	
 	public Material getCoreMaterial() {
@@ -48,20 +46,20 @@ public final class MultiBlockPattern {
 			
 			//System.out.println("MultiBlock on " + location.toVector().toString());
 			
-			return patternFacing == PatternFacing.CARDINAL ? checkCardinalPattern(location, blocks) : checkPattern(location, blocks); 
+			return patternFacing == PatternFacing.CARDINAL ? checkCardinalPattern(location, objects) : checkPattern(location, objects); 
 		}
 		
 		return false;
 	}
 	
-	private boolean checkCardinalPattern(Location startLocation, PatternBlock[] patternBlocks) {
+	private boolean checkCardinalPattern(Location startLocation, PatternObject[] patternObjects) {
 		boolean flag = false;
 		
-		PatternBlock[] pattern = null;
+		PatternObject[] pattern = null;
 		for (int i = 0; i < 4; i++) {
 			if (!flag) {
 				// set initial pattern or rotate the previous one by 90 degrees
-				pattern = i == 0 ? patternBlocks : rotatePatterns(pattern, PatternFacing.EAST);
+				pattern = i == 0 ? patternObjects : rotatePatterns(pattern, PatternFacing.EAST);
 
 				flag = checkPattern(startLocation, pattern);
 			}
@@ -70,53 +68,43 @@ public final class MultiBlockPattern {
 		return flag;
 	}
 	
-	private PatternBlock[] rotatePatterns(PatternBlock[] patternBlocks, PatternFacing patternFacing) {
+	private PatternObject[] rotatePatterns(PatternObject[] patternObjects, PatternFacing patternFacing) {
 		if (patternFacing != PatternFacing.NORTH || patternFacing != PatternFacing.CARDINAL) {
-			PatternBlock[] newPatternBlocks = new PatternBlock[patternBlocks.length];
+			PatternObject[] newPatternObjects = new PatternObject[patternObjects.length];
 			
 			int i = 0;
-			for (PatternBlock pattern : patternBlocks) {
+			for (PatternObject pattern : patternObjects) {
 				switch (patternFacing) {
-					case EAST: newPatternBlocks[i] = pattern.rotate90(); break;
-					case SOUTH: newPatternBlocks[i] = pattern.rotate180(); break;
-					case WEST: newPatternBlocks[i] = pattern.rotate270(); break;
+					case EAST: newPatternObjects[i] = pattern.rotate90(); break;
+					case SOUTH: newPatternObjects[i] = pattern.rotate180(); break;
+					case WEST: newPatternObjects[i] = pattern.rotate270(); break;
 					default: break;
 				}
 				
 				i++;
 			}
 			
-			return newPatternBlocks;
+			return newPatternObjects;
 		}
 		
-		return patternBlocks;
+		return patternObjects;
 	}
 	
-	private boolean checkPattern(Location startLocation, PatternBlock[] patternBlocks) {
-		if (patternBlocks != null && patternBlocks.length > 0) {
-			//System.out.println("-> has pattern blocks");
+	private boolean checkPattern(Location startLocation, PatternObject[] patternObjects) {
+		if (patternObjects != null && patternObjects.length > 0) {
 			boolean flag = true;
 			
-			//int i = 0;
-			for (PatternBlock pattern : patternBlocks) {
+			
+			for (PatternObject pattern : patternObjects) {
 				if (flag) {
 
-					//System.out.println("iteration " + i);
 					Location location = startLocation.add(pattern.getLocation());
-					if (location.getBlock() == null || location.getBlock().getType() != pattern.getMaterial()) {
+					if (location.getBlock() == null || !pattern.isValid(location)) {
 						flag = false;
-						//System.out.println("-> no pattern match");
-						
-						/*if (location.getBlock() != null) {
-							System.out.println("on " + location.toString());
-							System.out.print(" found: " + location.getBlock().getType() + ", should be: " + pattern.getMaterial());
-						}*/
 					}
 					
 					startLocation.subtract(pattern.getLocation());
 				}
-				
-				//i++;
 			}
 			
 			return flag;
