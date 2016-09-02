@@ -18,6 +18,13 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.Plugin;
 
+/**
+ * The multiblock factory, used to register custom multiblocks and detecting
+ * their patterns through events with the corresponding plugin
+ * 
+ * @author ShaneCraft
+ *
+ */
 public enum MultiBlockFactory {
 
 	INSTANCE;
@@ -114,6 +121,8 @@ public enum MultiBlockFactory {
 		
 		private final IMultiBlock multiBlock;
 		
+		private long lastSysTime;
+		
 		public PluginMultiBlock(Plugin plugin, IMultiBlock multiBlock) {
 			this.plugin = plugin;
 			this.multiBlock = multiBlock;
@@ -142,10 +151,17 @@ public enum MultiBlockFactory {
 		
 		@EventHandler
 		public void onPlayerInteractEvent(PlayerInteractEvent event) {
-			Block block = event.getClickedBlock();
+			long currentSysTime = System.currentTimeMillis();
 			
-			if (block != null && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-				INSTANCE.activate(plugin, block, event.getPlayer(), MultiBlockActivationType.CORE_INTERACTED);
+			// roughly 1 second delay
+			if (currentSysTime > (lastSysTime + 1000)) {
+				Block block = event.getClickedBlock();
+				
+				if (block != null && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+					INSTANCE.activate(plugin, block, event.getPlayer(), MultiBlockActivationType.CORE_INTERACTED);
+				}
+				
+				lastSysTime = currentSysTime;
 			}
 		}
 	}

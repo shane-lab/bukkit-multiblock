@@ -12,7 +12,7 @@ import org.bukkit.util.Vector;
 /**
  * Entity pattern for the multiblock structure
  * 
- * @author Shane
+ * @author ShaneCraft
  *
  */
 public class PatternEntity extends PatternObject {
@@ -26,6 +26,10 @@ public class PatternEntity extends PatternObject {
 	public PatternEntity(@Nonnull EntityType entityType, Vector relativeVec) {
 		super(relativeVec);
 		
+		if (entityType == EntityType.DROPPED_ITEM && !(this instanceof PatternItem)) {
+			throw new IllegalArgumentException("Use PatternItem to use items in your multiblock pattern");
+		}
+		
 		this.entityType = entityType;
 	}
 
@@ -36,8 +40,12 @@ public class PatternEntity extends PatternObject {
 
 	@Override
 	public boolean isValid(Location location) {
+		return getEntity(location) != null;
+	}
+	
+	protected Entity getEntity(Location location) {
 		if (location == null) {
-			return false;
+			return null;
 		}
 		
 		List<Entity> entities = (List<Entity>) location.getWorld().getNearbyEntities(location, 1, 1, 1);
@@ -51,7 +59,7 @@ public class PatternEntity extends PatternObject {
 			}
 		}
 		
-		return entity != null;
+		return entity;
 	}
 	
 	public EntityType getEntityType() {

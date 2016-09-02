@@ -9,7 +9,7 @@ import org.bukkit.util.Vector;
 /**
  * Block pattern for the multiblock structure
  * 
- * @author Shane
+ * @author ShaneCraft
  *
  */
 public class PatternBlock extends PatternObject {

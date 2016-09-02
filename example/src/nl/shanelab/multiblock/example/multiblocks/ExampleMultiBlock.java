@@ -1,9 +1,8 @@
-package nl.shanelab.multiblock.example;
+package nl.shanelab.multiblock.example.multiblocks;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -11,7 +10,6 @@ import nl.shanelab.multiblock.IMultiBlock;
 import nl.shanelab.multiblock.MultiBlockActivationType;
 import nl.shanelab.multiblock.MultiBlockPattern;
 import nl.shanelab.multiblock.PatternBlock;
-import nl.shanelab.multiblock.PatternEntity;
 
 public class ExampleMultiBlock implements IMultiBlock {
 	
@@ -37,7 +35,7 @@ public class ExampleMultiBlock implements IMultiBlock {
 
 	@Override
 	public MultiBlockPattern getMultiBlockPattern() {
-		return new MultiBlockPattern(Material.WOOL, // optional parameter [patternFacing: {default: CARDINAL} ]
+		return new MultiBlockPattern(Material.WOOL, // PatternFacing.CARDINAL, optional parameter [patternFacing: {default: CARDINAL} ]
 			// the cardinal parameter allows to check the pattern in any direction 
 			// or strict the pattern to face a certain one
 			
@@ -49,9 +47,7 @@ public class ExampleMultiBlock implements IMultiBlock {
 			new PatternBlock(Material.STONE, -2, 0, -2),
 			new PatternBlock(Material.BRICK, 2, 0, -2),
 			new PatternBlock(Material.WOOD, 2, 0, 2),
-			new PatternBlock(Material.COAL_BLOCK, -2, 0, 2),
-			// patterns even support entities
-			new PatternEntity(EntityType.CHICKEN, -2, 1, -2) 
+			new PatternBlock(Material.COAL_BLOCK, -2, 0, 2)
 		);
 	}
 }
