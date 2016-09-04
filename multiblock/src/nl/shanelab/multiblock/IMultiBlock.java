@@ -15,7 +15,7 @@ import org.bukkit.plugin.Plugin;
  */
 public interface IMultiBlock {
 
-	void onActivate(Plugin plugin, Location location, Player player, MultiBlockActivationType activationType);
+	void onActivate(Plugin plugin, Location location, Player player, MultiBlockActivation activation);
 	
 	@Nonnull MultiBlockPattern getMultiBlockPattern();
 }

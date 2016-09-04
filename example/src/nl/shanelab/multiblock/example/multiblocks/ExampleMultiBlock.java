@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import nl.shanelab.multiblock.IMultiBlock;
+import nl.shanelab.multiblock.MultiBlockActivation;
 import nl.shanelab.multiblock.MultiBlockActivationType;
 import nl.shanelab.multiblock.MultiBlockPattern;
 import nl.shanelab.multiblock.PatternBlock;
@@ -14,13 +15,13 @@ import nl.shanelab.multiblock.PatternBlock;
 public class ExampleMultiBlock implements IMultiBlock {
 	
 	@Override
-	public void onActivate(Plugin plugin, Location location, Player player, MultiBlockActivationType activationType) {
-		if (activationType == MultiBlockActivationType.CORE_PLACED) {
+	public void onActivate(Plugin plugin, Location location, Player player, MultiBlockActivation activation) {
+		if (activation.getType() == MultiBlockActivationType.CORE_PLACED) {
 			// when all pattern blocks are present and the last block placed
 			// is the core material block of the multiblock pattern, this block will run
 			
 			player.sendMessage(ChatColor.GREEN + "Example multiblock constructed");	
-		} else if (activationType == MultiBlockActivationType.CORE_INTERACTED) {
+		} else if (activation.getType() == MultiBlockActivationType.CORE_INTERACTED) {
 			// when all pattern blocks, including the core material, are present
 			// and the user interacts with the core material block 
 			
@@ -31,7 +32,7 @@ public class ExampleMultiBlock implements IMultiBlock {
 				// e.g. load custom gui
 			}
 		}
-	}
+	}	
 
 	@Override
 	public MultiBlockPattern getMultiBlockPattern() {

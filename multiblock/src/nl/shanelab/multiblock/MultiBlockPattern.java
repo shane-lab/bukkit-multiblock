@@ -22,6 +22,8 @@ public final class MultiBlockPattern {
 	
 	private final PatternFacing patternFacing;
 	
+	private PatternFacing lastPatternFacing;
+	
 	public MultiBlockPattern(@Nonnull Material coreMaterial, PatternObject ... objects) {
 		this(coreMaterial, PatternFacing.CARDINAL, objects);
 	}
@@ -40,11 +42,15 @@ public final class MultiBlockPattern {
 		return coreMaterial;
 	}
 	
+	public PatternFacing getLastPatternFacing() {
+		return patternFacing == PatternFacing.CARDINAL ? lastPatternFacing : patternFacing;
+	}
+	
 	public boolean isMultiBlock(Location location) {
 		if (location.getBlock().getType() == coreMaterial) {
 			// check for pattern
 			
-			//System.out.println("MultiBlock on " + location.toVector().toString());
+			lastPatternFacing = null;
 			
 			return patternFacing == PatternFacing.CARDINAL ? checkCardinalPattern(location, objects) : checkPattern(location, objects); 
 		}
@@ -60,6 +66,8 @@ public final class MultiBlockPattern {
 			if (!flag) {
 				// set initial pattern or rotate the previous one by 90 degrees
 				pattern = i == 0 ? patternObjects : rotatePatterns(pattern, PatternFacing.EAST);
+				
+				lastPatternFacing = PatternFacing.getById(i);
 
 				flag = checkPattern(startLocation, pattern);
 			}
