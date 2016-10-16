@@ -1,4 +1,4 @@
-package nl.shanelab.multiblock;
+package nl.shanelab.multiblock.patternobjects;
 
 import javax.annotation.Nonnull;
 
@@ -9,6 +9,10 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.util.Vector;
 
+import nl.shanelab.multiblock.IMaterial;
+import nl.shanelab.multiblock.MaterialWrapper;
+import nl.shanelab.multiblock.PatternObject;
+
 /**
  * Item (entity) pattern for the multiblock structure
  * 
@@ -17,7 +21,7 @@ import org.bukkit.util.Vector;
  */
 public class PatternItem extends PatternEntity {
 
-	private Material itemMaterial;
+	private IMaterial material;
 	
 	public PatternItem(@Nonnull Material itemMaterial, int x, int y, int z) {
 		this(itemMaterial, new Vector(x, y, z));
@@ -26,12 +30,22 @@ public class PatternItem extends PatternEntity {
 	public PatternItem(@Nonnull Material itemMaterial, Vector relativeVec) {
 		super(EntityType.DROPPED_ITEM, relativeVec);
 		
-		this.itemMaterial = itemMaterial;
+		this.material = new MaterialWrapper(itemMaterial);
+	}
+	
+	public PatternItem(@Nonnull IMaterial material, int x, int y, int z) {
+		this(material, new Vector(x, y, z));
+	}
+	
+	public PatternItem(@Nonnull IMaterial material, Vector relativeVec) {
+		super(EntityType.DROPPED_ITEM, relativeVec);
+		
+		this.material = material;
 	}
 	
 	@Override
 	protected PatternObject createRotatedClone(Vector vector) {
-		return new PatternItem(itemMaterial, vector);
+		return new PatternItem(material, vector);
 	}
 	
 	@Override
@@ -39,13 +53,13 @@ public class PatternItem extends PatternEntity {
 		Entity entity = getEntity(location);
 		
 		if (entity != null && entity instanceof Item) {
-			return ((Item) entity).getItemStack().getType() == itemMaterial;
+			return ((Item) entity).getItemStack().getType() == material.getType();
 		}
 		
 		return false;
 	}
 
 	public Material getItemMaterial() {
-		return itemMaterial;
+		return material.getType();
 	}
 }

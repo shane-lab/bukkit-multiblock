@@ -1,5 +1,9 @@
 package nl.shanelab.multiblock;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 import org.bukkit.Location;
@@ -16,43 +20,61 @@ import org.bukkit.Material;
  */
 public final class MultiBlockPattern {
 
-	private final Material coreMaterial;
+	private final IMaterial coreMaterial;
 	
 	private final PatternObject[] objects;
 	
-	private final PatternFacing patternFacing;
+	private final MultiBlockPatternFacing patternFacing;
 	
-	private PatternFacing lastPatternFacing;
+	private MultiBlockPatternFacing lastPatternFacing;
 	
-	public MultiBlockPattern(@Nonnull Material coreMaterial, PatternObject ... objects) {
-		this(coreMaterial, PatternFacing.CARDINAL, objects);
+	public MultiBlockPattern(@Nonnull Material coreMaterialType, PatternObject ... objects) {
+		this(coreMaterialType, MultiBlockPatternFacing.CARDINAL, objects);
 	}
 	
-	public MultiBlockPattern(@Nonnull Material coreMaterial, PatternFacing patternFacing, PatternObject ... objects) {
-		if (!coreMaterial.isBlock()) {
+	public MultiBlockPattern(@Nonnull Material coreMaterialType, MultiBlockPatternFacing patternFacing, PatternObject ... objects) {
+		if (!coreMaterialType.isBlock()) {
+			throw new IllegalArgumentException(String.format("The given coreMaterial %s is not a valid block material.", coreMaterialType.toString()));
+		}
+		
+		this.coreMaterial = new MaterialWrapper(coreMaterialType);
+		this.patternFacing = patternFacing;
+		this.objects = patternFacing == MultiBlockPatternFacing.CARDINAL ? objects : rotatePatterns(objects, patternFacing);
+	}
+	
+	public MultiBlockPattern(@Nonnull IMaterial coreMaterial, PatternObject ... objects) {
+		this(coreMaterial, MultiBlockPatternFacing.CARDINAL, objects);
+	}
+	
+	public MultiBlockPattern(@Nonnull IMaterial coreMaterial, MultiBlockPatternFacing patternFacing, PatternObject ... objects) {
+		if (!coreMaterial.getType().isBlock()) {
 			throw new IllegalArgumentException(String.format("The given coreMaterial %s is not a valid block material.", coreMaterial.toString()));
 		}
 		
 		this.coreMaterial = coreMaterial;
 		this.patternFacing = patternFacing;
-		this.objects = patternFacing == PatternFacing.CARDINAL ? objects : rotatePatterns(objects, patternFacing);
+		this.objects = patternFacing == MultiBlockPatternFacing.CARDINAL ? objects : rotatePatterns(objects, patternFacing);
 	}
 	
-	public Material getCoreMaterial() {
+	public List<PatternObject> getPatternObjects() {
+		return (List<PatternObject>) Collections.unmodifiableList(Arrays.asList(objects));
+	}
+	
+	public IMaterial getCoreMaterial() {
 		return coreMaterial;
 	}
 	
-	public PatternFacing getLastPatternFacing() {
-		return patternFacing == PatternFacing.CARDINAL ? lastPatternFacing : patternFacing;
+	public MultiBlockPatternFacing getLastPatternFacing() {
+		return patternFacing == MultiBlockPatternFacing.CARDINAL ? lastPatternFacing : patternFacing;
 	}
 	
 	public boolean isMultiBlock(Location location) {
-		if (location.getBlock().getType() == coreMaterial) {
+		if (coreMaterial.isValidBlock(location.getBlock())) {
 			// check for pattern
 			
 			lastPatternFacing = null;
 			
-			return patternFacing == PatternFacing.CARDINAL ? checkCardinalPattern(location, objects) : checkPattern(location, objects); 
+			return patternFacing == MultiBlockPatternFacing.CARDINAL ? checkCardinalPattern(location, objects) : checkPattern(location, objects); 
 		}
 		
 		return false;
@@ -65,9 +87,9 @@ public final class MultiBlockPattern {
 		for (int i = 0; i < 4; i++) {
 			if (!flag) {
 				// set initial pattern or rotate the previous one by 90 degrees
-				pattern = i == 0 ? patternObjects : rotatePatterns(pattern, PatternFacing.EAST);
+				pattern = i == 0 ? patternObjects : rotatePatterns(pattern, MultiBlockPatternFacing.EAST);
 				
-				lastPatternFacing = PatternFacing.getById(i);
+				lastPatternFacing = MultiBlockPatternFacing.getById(i);
 
 				flag = checkPattern(startLocation, pattern);
 			}
@@ -76,8 +98,8 @@ public final class MultiBlockPattern {
 		return flag;
 	}
 	
-	private PatternObject[] rotatePatterns(PatternObject[] patternObjects, PatternFacing patternFacing) {
-		if (patternFacing != PatternFacing.NORTH || patternFacing != PatternFacing.CARDINAL) {
+	private PatternObject[] rotatePatterns(PatternObject[] patternObjects, MultiBlockPatternFacing patternFacing) {
+		if (patternFacing != MultiBlockPatternFacing.NORTH || patternFacing != MultiBlockPatternFacing.CARDINAL) {
 			PatternObject[] newPatternObjects = new PatternObject[patternObjects.length];
 			
 			int i = 0;

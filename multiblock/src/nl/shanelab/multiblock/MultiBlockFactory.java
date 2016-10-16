@@ -120,7 +120,7 @@ public enum MultiBlockFactory {
 		PluginMultiBlockCollection collection = pluginMultiBlocks.get(plugin);
 		if (collection != null) {
 			for (IMultiBlock multiBlock : collection.getMultiBlocks()) {
-				if (multiBlock.getMultiBlockPattern().getCoreMaterial() == materialCore) {
+				if (multiBlock.getMultiBlockPattern().getCoreMaterial().getType() == materialCore) {
 					multiBlocks.add(multiBlock);
 				}
 			}

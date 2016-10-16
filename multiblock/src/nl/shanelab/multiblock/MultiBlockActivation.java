@@ -11,9 +11,9 @@ public final class MultiBlockActivation {
 	
 	private final MultiBlockActivationType activationType;
 	
-	private final PatternFacing patternFacing;
+	private final MultiBlockPatternFacing patternFacing;
 	
-	public MultiBlockActivation(MultiBlockActivationType activationType, PatternFacing patternFacing) {
+	public MultiBlockActivation(MultiBlockActivationType activationType, MultiBlockPatternFacing patternFacing) {
 		this.activationType = activationType;
 		this.patternFacing = patternFacing;
 	}
@@ -22,7 +22,7 @@ public final class MultiBlockActivation {
 		return activationType;
 	}
 	
-	public PatternFacing getFacing() {
+	public MultiBlockPatternFacing getFacing() {
 		return patternFacing;
 	}
 }

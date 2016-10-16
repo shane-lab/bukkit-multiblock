@@ -23,9 +23,9 @@ import nl.shanelab.multiblock.IMultiBlock;
 import nl.shanelab.multiblock.MultiBlockActivation;
 import nl.shanelab.multiblock.MultiBlockActivationType;
 import nl.shanelab.multiblock.MultiBlockPattern;
-import nl.shanelab.multiblock.PatternBlock;
-import nl.shanelab.multiblock.PatternEntity;
-import nl.shanelab.multiblock.PatternItem;
+import nl.shanelab.multiblock.patternobjects.PatternBlock;
+import nl.shanelab.multiblock.patternobjects.PatternEntity;
+import nl.shanelab.multiblock.patternobjects.PatternItem;
 
 public class ChickenSoupMultiBlock implements IMultiBlock {
 	
