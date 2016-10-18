@@ -37,7 +37,7 @@ public class ExampleMultiBlock implements IMultiBlock {
 
 	@Override
 	public MultiBlockPattern getMultiBlockPattern() {
-		return new MultiBlockPattern(SpecificMaterial.WOOL_ORANGE, // MultiBlockPatternFacing.EAST, optional parameter [patternFacing: {default: CARDINAL} ]
+		return new MultiBlockPattern(SpecificMaterial.HARDENED_CLAY_CYAN, // MultiBlockPatternFacing.EAST, optional parameter [patternFacing: {default: CARDINAL} ]
 			// the patternFacing parameter allows the mutliblock to activate in any direction 
 			// or strict the pattern of the multiblock to face a certain one
 			
@@ -48,9 +48,11 @@ public class ExampleMultiBlock implements IMultiBlock {
 			// WEST: 	negative on X-axis
 			new PatternBlock(Material.STONE, -2, 0, -2),
 			new PatternBlock(Material.BRICK, 2, 0, -2),
-			new PatternBlock(Material.WOOD, 2, 0, 2),
-			new PatternBlock(Material.COAL_BLOCK, -2, 0, 2),
-			new PatternBlock(SpecificMaterial.WOOL_WHITE, 0, 1, 0)
+			new PatternBlock(SpecificMaterial.SLAB_PURPUR_UP, 2, 0, 2),
+			new PatternBlock(Material.COAL_BLOCK, -2, 0, 2)// ,
+//			new PatternBlock(SpecificMaterial.HARDENED_CLAY_CYAN, 0, 1, 0),
+//			new PatternBlock(Material.HARD_CLAY, 0, 1, 0),
+//			new PatternBlock(SpecificMaterial.CARPET_ORANGE, 0, 2, 0)
 		);
 	}
 }
